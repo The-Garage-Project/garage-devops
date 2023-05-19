@@ -1,13 +1,13 @@
 pipeline {
     agent any
 
-     environment {
-        DOCKERHUB_CREDENTIALS = credentials('DOCKERHUB_CREDENTIALS')
-     }
-
     options {
         // Skip running the pipeline for all branches except 'main'
         skipDefaultCheckout(true)
+    }
+
+    environment {
+        DOCKERHUB_CREDENTIALS = credentials('DOCKERHUB_CREDENTIALS')
     }
 
     stages {

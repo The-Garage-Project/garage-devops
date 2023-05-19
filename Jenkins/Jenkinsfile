@@ -39,8 +39,7 @@ pipeline {
 
     post {
         always {
-            archiveArtifacts artifacts: '**/target/*.jar', fingerprint: true
-            sh 'docker logout'
+            archiveArtifacts artifacts: '**/target/*.jar', fingerprint: true, sh 'docker logout'
         }
 
         success {

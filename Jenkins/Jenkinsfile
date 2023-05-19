@@ -1,0 +1,50 @@
+pipeline {
+    agent any
+
+     environment {
+        DOCKERHUB_CREDENTIALS = credentials('DOCKERHUB_CREDENTIALS')
+     }
+
+    options {
+        // Skip running the pipeline for all branches except 'main'
+        skipDefaultCheckout(true)
+    }
+
+    stages {
+        stage('Checkout Backend') {
+            steps {
+                git branch:  'main', url: 'https://github.com/The-Garage-Project/garage-backend.git'
+            }
+        }
+
+        stage('Build Backend Maven') {
+            steps {
+                sh 'mvn clean install -DskipTests'
+            }
+        }
+
+        stage('Build Backend Docker') {
+            sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
+            sh 'docker build -t spyrosmoux/garage-backend:latest'
+        }
+
+        stage('Push Backend Docker') {
+            sh 'docker push spyrosmoux/garage-backend:latest'
+        }
+    }
+
+    post {
+        always {
+            archiveArtifacts artifacts: '**/target/*.jar', fingerprint: true
+            sh 'docker logout'
+        }
+
+        success {
+            echo 'Build successful!'
+        }
+
+        failure {
+            echo 'Build failed!'
+        }
+    }
+}

@@ -24,12 +24,16 @@ pipeline {
         }
 
         stage('Build Backend Docker') {
-            sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
-            sh 'docker build -t spyrosmoux/garage-backend:latest'
+            steps {
+                sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
+                sh 'docker build -t spyrosmoux/garage-backend:latest'
+            }
         }
 
         stage('Push Backend Docker') {
-            sh 'docker push spyrosmoux/garage-backend:latest'
+            steps {
+                sh 'docker push spyrosmoux/garage-backend:latest'
+            }
         }
     }
 

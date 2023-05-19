@@ -6,10 +6,6 @@ pipeline {
         skipDefaultCheckout(true)
     }
 
-    environment {
-        DOCKERHUB_CREDENTIALS = credentials('DOCKERHUB_CREDENTIALS')
-    }
-
     stages {
         stage('Checkout Backend') {
             steps {
@@ -25,14 +21,14 @@ pipeline {
 
         stage('Build Backend Docker') {
             steps {
-                sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
-                sh 'docker build -t spyrosmoux/garage-backend:latest'
+                dockerImage = docker.build("spyrosmoux/garage-backend:latest")
             }
         }
 
         stage('Push Backend Docker') {
             steps {
-                sh 'docker push spyrosmoux/garage-backend:latest'
+                withDockerRegistry([ credentialsId: "DOCKERHUB_CREDENTIALS", url: "" ]) {
+                        dockerImage.push()
             }
         }
     }

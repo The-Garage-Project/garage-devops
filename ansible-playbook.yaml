@@ -1,0 +1,25 @@
+---
+- name: Deploy Garage Project in Docker
+  hosts: localhost
+
+  tasks:
+    - name: Copy .env file
+      copy:
+        src: ./.env
+        dest: /home/devops/garage-project-docker/.env
+
+    - name: Copy Docker Compose Services file
+      copy:
+        src: ./docker-compose-services.yaml
+        dest: /home/devops/garage-project-docker/docker-compose-services.yaml
+
+    - name: Copy Docker Compose file
+      copy:
+        src: ./docker-compose.yaml
+        dest: /home/devops/garage-project-docker/docker-compose.yaml
+
+    - name: Start Docker Services
+      command: docker compose -f /home/devops/garage-project-docker/docker-compose-services.yaml up -d
+
+    - name: Start Docker Apps
+      command: docker compose -f /home/devops/garage-project-docker/docker-compose.yaml up -d

@@ -1,0 +1,77 @@
+version: "3.8"
+services:
+  mariadb:
+    image: mariadb
+    container_name: garage-db
+    environment:
+      - MARIADB_USER=${MARIADB_USER}
+      - MARIADB_PASSWORD=${MARIADB_PASSWORD}
+      - MARIADB_ROOT_PASSWORD=${MARIADB_ROOT_PASSWORD}
+      - MARIADB_DATABASE=${MARIADB_DATABASE}
+    ports:
+      - ${MARIADB_PORT}:3306
+    volumes:
+      - ./db/:/var/lib/mysql
+      - ./db-init/:/docker-entrypoint-initdb.d
+    restart: always
+    networks:
+      garage-net:
+
+  keycloak:
+    container_name: garage-keycloak
+    image: quay.io/keycloak/keycloak:20.0.1
+    command:
+      - start-dev --import-realm
+    volumes:
+      - ./docker/keycloak:/opt/keycloak/data/import
+    environment:
+      DB_VENDOR: mariadb
+      DB_ADDR: ${MARIADB_KEYCLOAK_HOST}
+      DB_DATABASE: ${MARIADB_KEYCLOAK_DATABASE}
+      DB_PORT: ${MARIADB_KEYCLOAK_PORT}
+      DB_USER: ${MARIADB_USER}
+      DB_PASSWORD: ${MARIADB_PASSWORD}
+      KEYCLOAK_ADMIN: ${KEYCLOAK_SUPER_ADMIN_USER}
+      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_SUPER_ADMIN_PASS}
+      JGROUPS_DISCOVERY_PROTOCOL: JDBC_PING
+      KC_HOSTNAME_PATH: ${KC_HOSTNAME_PATH}
+      KC_HOSTNAME_URL: ${KC_HOSTNAME_URL}
+      KC_PROXY: "passthrough"
+      KC_HOSTNAME_ADMIN_URL: ${KC_HOSTNAME_ADMIN_URL}
+    ports:
+      - ${KEYCLOAK_PORT}:8080
+    restart: always
+    depends_on:
+      - mariadb-keycloak
+    networks:
+      garage-net:
+
+  mariadb-keycloak:
+    image: mariadb
+    container_name: garage-keycloak-db
+    restart: always
+    ports:
+      - ${MARIADB_KEYCLOAK_PORT}:3306
+    environment:
+      MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD}
+      MARIADB_DATABASE: ${MARIADB_KEYCLOAK_DATABASE}
+      MARIADB_USER: ${MARIADB_USER}
+      MARIADB_PASSWORD: ${MARIADB_PASSWORD}
+    volumes:
+      - ./keycloak-db:/var/lib/mysql
+      - ./init-keycloak-db:/docker-entrypoint-initdb.d
+    networks:
+      garage-net:
+
+  mailhog:
+    image: mailhog/mailhog:latest
+    container_name: garage-mailhog
+    restart: always
+    ports:
+      - 1025:1025
+      - 8025:8025
+    networks:
+      garage-net:
+
+networks:
+  garage-net:

@@ -21,7 +21,7 @@
         src: ./helm/
         dest: /home/devops/garage-project-k8s/helm/
 
-    - name: Start Minikube
+    - name: Start Microk8s
       command: microk8s start
 
     - name: Deploy Helm Charts

@@ -25,4 +25,4 @@
       command: microk8s start
 
     - name: Deploy Helm Charts
-      command: helmfile -e azure apply
+      command: helmfile --file /home/devops/garage-project-k8s/helm/helmfile.yaml -e azure apply

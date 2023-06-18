@@ -1,0 +1,28 @@
+---
+- name: Deploy Garage Project in k8s
+  hosts: localhost
+
+  tasks:
+    - name: Copy .env file
+      copy:
+        src: ./.env
+        dest: /home/devops/garage-project-docker/.env
+
+    - name: Copy Docker Compose Services file
+      copy:
+        src: ./docker-compose-services.yaml
+        dest: /home/devops/garage-project-docker/docker-compose-services.yaml
+
+    - name: Start Docker Services
+      command: docker compose -f /home/devops/garage-project-docker/docker-compose-services.yaml up -d
+
+    - name: Copy Helm Folder
+      copy:
+        src: ./helm/
+        dest: /home/devops/garage-project-k8s/helm/
+
+    - name: Start Minikube
+      command: microk8s start
+
+    - name: Deploy Helm Charts
+      command: helmfile -e azure apply

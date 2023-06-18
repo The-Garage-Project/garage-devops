@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "backend.fullname" . }}
+data:
+  MARIADB_USER: {{ .Values.config.db.user | quote }}
+  MARIADB_PASSWORD: {{ .Values.config.db.password | quote }}
+  MARIADB_DATABASE: {{ .Values.config.db.database | quote }}
+  MARIADB_HOST: {{ .Values.config.db.host | quote }}
+  MARIADB_PORT: {{ .Values.config.db.port | quote }}
+  KEYCLOAK_CLIENT_ID: {{ .Values.config.keycloak.clientId | quote }}
+  KEYCLOAK_AUTH_SERVER_URL: {{ .Values.config.keycloak.authServerUrl | quote }}
+  KEYCLOAK_REALM: {{ .Values.config.keycloak.realm | quote }}
+  BACKEND_PORT: {{ .Values.config.port | quote }}

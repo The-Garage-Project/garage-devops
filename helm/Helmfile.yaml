@@ -1,0 +1,28 @@
+---
+environments:
+  default:
+    values:
+      - dbHost: localhost
+        authServerUrl: http://localhost:8087/
+  azure:
+    values:
+      - dbHost: devops-assignment.francecentral.cloudapp.azure.com
+        authServerUrl: https://devops-assignment.francecentral.cloudapp.azure.com/auth/
+
+---
+releases:
+  - name: garage-backend
+    chart: ./backend
+    values:
+      - config:
+          db:
+            user: garage
+            password: garage
+            database: garage-db
+            host: {{ .Values.dbHost }}
+            port: 3306
+          keycloak:
+            clientId: garage-project
+            authServerUrl: {{ .Values.authServerUrl }}
+            realm: garage-project
+          port: 8081

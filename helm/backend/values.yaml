@@ -47,7 +47,7 @@ ingress:
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
   hosts:
-    - host: hello-world.info
+    - host: devops-assignment.francecentral.cloudapp.azure.com
       paths:
         - path: /app/garage
           pathType: ImplementationSpecific

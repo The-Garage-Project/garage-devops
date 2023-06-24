@@ -1,0 +1,38 @@
+version: "3.8"
+services:
+  mariadb:
+    image: mariadb
+    container_name: garage-db
+    environment:
+      - MARIADB_USER=${MARIADB_USER}
+      - MARIADB_PASSWORD=${MARIADB_PASSWORD}
+      - MARIADB_ROOT_PASSWORD=${MARIADB_ROOT_PASSWORD}
+      - MARIADB_DATABASE=${MARIADB_DATABASE}
+    ports:
+      - ${MARIADB_PORT}:3306
+    volumes:
+      - ./db/:/var/lib/mysql
+      - ./db-init/:/docker-entrypoint-initdb.d
+    restart: always
+    networks:
+      garage-net:
+
+  mariadb-keycloak:
+    image: mariadb
+    container_name: garage-keycloak-db
+    restart: always
+    ports:
+      - ${MARIADB_KEYCLOAK_PORT}:3306
+    environment:
+      MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD}
+      MARIADB_DATABASE: ${MARIADB_KEYCLOAK_DATABASE}
+      MARIADB_USER: ${MARIADB_USER}
+      MARIADB_PASSWORD: ${MARIADB_PASSWORD}
+    volumes:
+      - ./keycloak-db:/var/lib/mysql
+      - ./init-keycloak-db:/docker-entrypoint-initdb.d
+    networks:
+      garage-net:
+
+networks:
+  garage-net:

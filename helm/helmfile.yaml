@@ -4,10 +4,23 @@ environments:
     values:
       - dbHost: localhost
         authServerUrl: http://localhost:8087/
+        hostnameUrl: http://localhost:8087/
+        hostnameAdminUrl: http://localhost:8087/
+        mailHost: localhost
+        domainName: localhost
   azure:
     values:
-      - dbHost: devops-assignment.francecentral.cloudapp.azure.com
-        authServerUrl: https://devops-assignment.francecentral.cloudapp.azure.com/auth/
+      - dbHost: devops-k8s
+        authServerUrl: https://team14-devops.cloudns.ph/auth/
+        hostnameUrl: https://team14-devops.cloudns.ph/auth
+        hostnameAdminUrl: https://team14-devops.cloudns.ph/auth
+        mailHost: mailhog
+        domainName: team14-devops.cloudns.ph
+
+---
+repositories:
+  - name: mailhog
+    url: https://codecentric.github.io/helm-charts
 
 ---
 releases:
@@ -26,3 +39,54 @@ releases:
             authServerUrl: {{ .Values.authServerUrl }}
             realm: garage-project
           port: 8081
+          mail:
+            host: {{ .Values.mailHost }}
+            username: garage-project
+            password: garage-project
+        ingress:
+          tls:
+            - secretName: tls-secret
+              hosts:
+                - {{ .Values.domainName }}
+  - name: keycloak
+    chart: ./keycloak
+    values:
+      - config:
+          db:
+            addr: garage-keycloak
+            database: keycloak
+            port: 3307
+            user: garage
+            password: garage
+          keycloak:
+            admin: keycloak
+            adminPassword: keycloak
+          kc:
+            hostnamePath: /auth
+            hostnameUrl: {{ .Values.hostnameUrl }}
+            hostnameAdminUrl: {{ .Values.hostnameAdminUrl }}
+        ingress:
+          tls:
+            - secretName: tls-secret
+              hosts:
+                - {{ .Values.domainName }}
+  - name: mailhog
+    chart: codecentric/mailhog
+    values:
+      - service:
+          type: NodePort
+          port:
+            http: 8025
+            smtp: 1025
+        ingress:
+          enabled: true
+          annotations:
+          hosts:
+            - host: team14-devops.cloudns.ph
+              paths:
+                - path: /
+                  pathType: Prefix
+          tls:
+            - secretName: tls-secret
+              hosts:
+                - {{ .Values.domainName }}

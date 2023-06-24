@@ -12,3 +12,6 @@ data:
   KEYCLOAK_AUTH_SERVER_URL: {{ .Values.config.keycloak.authServerUrl | quote }}
   KEYCLOAK_REALM: {{ .Values.config.keycloak.realm | quote }}
   BACKEND_PORT: {{ .Values.config.port | quote }}
+  MAIL_HOST: {{ .Values.config.mail.host | quote }}
+  MAIL_USERNAME: {{ .Values.config.mail.username | quote }}
+  MAIL_PASSWORD: {{ .Values.config.mail.password | quote }}

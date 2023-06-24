@@ -1,14 +1,14 @@
-# Default values for backend.
+# Default values for keycloak.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
 replicaCount: 1
 
 image:
-  repository: spyrosmoux/garage-backend
+  repository: quay.io/keycloak/keycloak
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "latest"
+  tag: "20.0.1"
 
 imagePullSecrets: []
 nameOverride: ""
@@ -38,16 +38,17 @@ securityContext: {}
 
 service:
   type: NodePort
-  port: 8081
+  port: 8080
 
 ingress:
   enabled: true
   className: ""
-  annotations: {}
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
   hosts:
     - host: team14-devops.cloudns.ph
       paths:
-        - path: /app/garage
+        - path: /auth/(.*)
           pathType: Prefix
   tls:
     - secretName: ""
@@ -81,21 +82,22 @@ affinity: {}
 
 config:
   db:
+    vendor: mariadb
+    addr: ""
+    database: ""
+    port: ""
     user: ""
     password: ""
-    database: ""
-    host: ""
-    port: ""
   keycloak:
-    clientId: ""
-    authServerUrl: ""
-    realm: ""
-  port: ""
+    admin: ""
+    adminPassword: ""
+  jgroupDiscoveryProtocol: JDBC_PING
+  kc:
+    hostnamePath: ""
+    hostnameUrl: ""
+    proxy: passthrough
+    hostnameAdminUrl: ""
   secret:
     name: ""
     certificate: ""
     privateKey: ""
-  mail:
-    host: ""
-    username: ""
-    password: ""

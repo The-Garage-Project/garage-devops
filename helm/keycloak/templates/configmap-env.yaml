@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "keycloak.fullname" . }}-env
+data:
+  DB_VENDOR: {{ .Values.config.db.vendor | quote }}
+  DB_ADDR: {{ .Values.config.db.addr | quote }}
+  DB_DATABASE: {{ .Values.config.db.database | quote }}
+  DB_PORT: {{ .Values.config.db.port | quote }}
+  DB_USER: {{ .Values.config.db.user | quote }}
+  DB_PASSWORD: {{ .Values.config.db.password | quote }}
+  KEYCLOAK_ADMIN: {{ .Values.config.keycloak.admin | quote }}
+  KEYCLOAK_ADMIN_PASSWORD: {{ .Values.config.keycloak.adminPassword | quote }}
+  JGROUPS_DISCOVERY_PROTOCOL: {{ .Values.config.jgroupDiscoveryProtocol | quote }}
+  KC_HOSTNAME_PATH: {{ .Values.config.kc.hostnamePath | quote }}
+  KC_HOSTNAME_URL: {{ .Values.config.kc.hostnameUrl | quote }}
+  KC_PROXY: {{ .Values.config.kc.proxy | quote }}
+  KC_HOSTNAME_ADMIN_URL: {{ .Values.config.kc.hostnameAdminUrl | quote }}

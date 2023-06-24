@@ -5,12 +5,12 @@
   tasks:
     - name: Copy .env file
       copy:
-        src: ./.env
+        src: ./.env.k8s
         dest: /home/devops/garage-project-docker/.env
 
     - name: Copy Docker Compose Services file
       copy:
-        src: ./docker-compose-services.yaml
+        src: ./docker-compose-services-k8s.yaml
         dest: /home/devops/garage-project-docker/docker-compose-services.yaml
 
     - name: Start Docker Services

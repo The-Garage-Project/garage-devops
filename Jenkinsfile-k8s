@@ -11,9 +11,14 @@ pipeline{
             steps {
                 sshagent(credentials:['K8S_SSH_LOGIN']){
                     sh 'scp -o StrictHostKeyChecking=no  helm/ devops@team14-devops.cloudns.ph:/home/devops/helm/'
-                    sh 'scp .env.k8s devops@team14-devops.cloudns.ph:/home/devops/garage-devops-docker/.env'
+                }
+                sshagent(credentials:['K8S_SSH_LOGIN']){
                     sh 'scp docker-compose-services-k8s.yaml devops@team14-devops.cloudns.ph:/home/devops/garage-devops-docker/docker-compose-services.yaml'
+                }
+                sshagent(credentials:['K8S_SSH_LOGIN']){
                     sh 'scp k8s-playbook.yaml devops@team14-devops.cloudns.ph:/home/devops/k8s-playbook.yaml'
+                }
+                sshagent(credentials:['K8S_SSH_LOGIN']){
                     sh 'ssh devops@team14-devops.cloudns.ph 'ansible-playbook /home/devops/k8s-playbook.yaml' '
                 }
             }

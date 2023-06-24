@@ -7,4 +7,4 @@
       command: docker compose -f /home/devops/garage-project-docker/docker-compose-services.yaml up -d
 
     - name: Deploy Helm Charts
-      command: helmfile --file /home/devops/garage-project-k8s/helm/helmfile.yaml -e azure apply
+      command: helmfile --file /home/devops/helm/helmfile.yaml -e azure apply

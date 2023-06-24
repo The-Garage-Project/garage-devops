@@ -2,20 +2,18 @@ pipeline {
     agent any
 
     stages {
-        node {
-          def remote = [:]
-          remote.name = 'k8s'
-          remote.host = 'team14-devops.cloudns.ph'
-          remote.user = 'devops'
-          remote.identityFile = '/home/devops/devops-k8s_key.pem'
-          remote.allowAnyHosts = true
-          stage('Remote SSH') {
+        def remote = [:]
+        remote.name = 'k8s'
+        remote.host = 'team14-devops.cloudns.ph'
+        remote.user = 'devops'
+        remote.identityFile = '/home/devops/devops-k8s_key.pem'
+        remote.allowAnyHosts = true
+        stage('Remote SSH') {
             sshPut remote: remote, from: './k8s-playbook.yaml', into: '.'
             sshPut remote: remote, from: './helm/', into: '/home/devops/helm/'
             sshPut remote: remote, from: './docker-compose-services-k8s.yaml', into: '/home/devops/garage-project-docker/docker-compose-services.yaml'
             sshPut remote: remote, from: './.env.k8s', into: '/home/devops/garage-project-docker/.env'
             sshCommand remote: remote, command: "ansible-playbook k8s-playbook.yaml"
-          }
         }
     }
 }
